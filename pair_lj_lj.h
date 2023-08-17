@@ -10,6 +10,7 @@
 
    See the README file in the top-level LAMMPS directory.
 ------------------------------------------------------------------------- */
+
 #ifdef PAIR_CLASS
 // clang-format off
 PairStyle(lj/lj,PairLJLJ);
@@ -21,39 +22,39 @@ PairStyle(lj/lj,PairLJLJ);
 
 #include "pair.h"
 
-namespace LAMMPS_NS {
-    class PairLJLJ : public Pair 
-    {
-        public:
-            PairLJLJ(class LAMMPS *);
-            ~PairLJLJ() override;
+namespace LAMMPS_NS 
+{
 
-            void compute(int, int) override;
-            void settings(int, char **) override;
-            void coeff(int, char **) override;
-            double init_one(int, int) override;
+class PairLJLJ : public Pair 
+{
+   public:
+      PairLJLJ(class LAMMPS *);
+      ~PairLJLJ() override;
 
-            void write_restart(FILE *) override;
-            void read_restart(FILE *) override;
-            void write_restart_settings(FILE *) override;
-            void read_restart_settings(FILE *) override;
-            void write_data(FILE *) override;
-            void write_data_all(FILE *) override;
+      void compute(int, int) override;
+      void settings(int, char **) override;
+      void coeff(int, char **) override;
+      double init_one(int, int) override;
+      void write_restart(FILE *) override;
+      void read_restart(FILE *) override;
+      void write_restart_settings(FILE *) override;
+      void read_restart_settings(FILE *) override;
+      void write_data(FILE *) override;
+      void write_data_all(FILE *) override;
+      //   double single(int, int, int, int, double, double, double, double &) override;
+      void *extract(const char *, int &) override;
 
-            // double single(int, int, int, int, double, double, double, double &) override;
-            void *extract(const char *, int &) override;
+   protected:
+      double cut_global, cut_inner_global, lambda_param;
+      double **cut, **cut_inner, **cut_inner_sq;
+      double **epsilon, **sigma;
+      double **lj1, **lj2, **lj3, **lj4;
+      double **lambda_p;
 
-        protected:
-            double cut_global, cut_inner_global, lambda_param;
-            double **cut, **cut_inner, **cut_inner_sq, **cut_sq;
-            double **epsilon, **sigma;
-            double **lambda_p;
-            double **lj1, **lj2, **lj3, **lj4, **offset;
-            
+      void allocate();
+};
 
-            void allocate();
+}    // namespace LAMMPS_NS
 
-    }; //end of class definition 
-}     // namespace LAMMPS_NS
 #endif
 #endif
