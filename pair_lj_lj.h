@@ -50,7 +50,7 @@ class PairLJLJ : public Pair
       double **epsilon, **sigma;
       double **lj1, **lj2, **lj3, **lj4;
       double **lambda_p;
-
+      double **offset;
       void allocate();
 };
 

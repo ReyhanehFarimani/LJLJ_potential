@@ -61,6 +61,7 @@ PairLJLJ::~PairLJLJ()
     memory->destroy(lj3); //4.0 * epsilon[i][j] * pow(sigma[i][j],12.0)
     memory->destroy(lj4); //4.0 * epsilon[i][j] * pow(sigma[i][j],6.0)
 
+    memory->destroy(offset);
   }
 }
 
@@ -94,6 +95,9 @@ void PairLJLJ::allocate()
     memory->create(lj4, n+1, n+1, "pair:lj4");
 
     memory->create(lambda_p, n+1, n+1, "pair:lambda_p");
+
+
+    memory->create(offset, n, n, "pair:offset");
 }
 
 /* ----------------------------------------------------------------------
@@ -195,6 +199,12 @@ double PairLJLJ::init_one(int i, int j)
 
     }
 
+    if (offset_flag && (cut[i][j] > 0.0)) {
+    double ratio = sigma[i][j] / cut[i][j];
+    offset[i][j] = 4.0 * epsilon[i][j] * (pow(ratio, 12.0) - pow(ratio, 6.0));
+    } else
+    offset[i][j] = 0.0;
+
     cut_inner_sq[i][j] = cut_inner[i][j]*cut_inner[i][j];
     cutsq[i][j] = cut[i][j]*cut[i][j];
     lj1[i][j] = 48.0 * epsilon[i][j] * pow(sigma[i][j], 12.0);
@@ -210,7 +220,7 @@ double PairLJLJ::init_one(int i, int j)
     lj2[j][i] = lj2[i][j];
     lj3[j][i] = lj3[i][j];
     lj4[j][i] = lj4[i][j];
-    
+    offset[j][i] = offset[i][j];
     return cut[i][j];   
 }
 
@@ -268,31 +278,29 @@ void PairLJLJ::compute(int eflag, int vflag)
 
         if (rsq < cut_inner_sq[itype][jtype]) 
         {
-          r2inv = 1.0/rsq;
-          r6inv = r2inv*r2inv*r2inv;
-          forcelj = r6inv * (lj1[itype][jtype]*r6inv - lj2[itype][jtype]);
+          r2inv = 1.0 / rsq;
+          r6inv = r2inv * r2inv * r2inv;
+          forcelj = r6inv * (lj1[itype][jtype] * r6inv - lj2[itype][jtype]);
+          fpair = factor_lj * r6inv * (lj1[itype][jtype] * r6inv - lj2[itype][jtype]) * r2inv;
 
-          fpair = factor_lj*forcelj*r2inv;
-
-          f[i][0] += delx*fpair;
-          f[i][1] += dely*fpair;
-          f[i][2] += delz*fpair;
+          f[i][0] += delx * fpair;
+          f[i][1] += dely * fpair;
+          f[i][2] += delz * fpair;
 
           if (newton_pair || j < nlocal) 
           {
-            f[j][0] -= delx*fpair;
-            f[j][1] -= dely*fpair;
-            f[j][2] -= delz*fpair;
+            f[j][0] -= delx * fpair;
+            f[j][1] -= dely * fpair;
+            f[j][2] -= delz * fpair;
           }
           // should change
           if (eflag) 
           {
-            evdwl = r6inv * (lj3[itype][jtype]*r6inv - lj4[itype][jtype])+ epsilon[itype][jtype] * (1 - lambda_p[itype][jtype]);
-
+            evdwl = r6inv * (lj3[itype][jtype] * r6inv - lj4[itype][jtype]) - offset[itype][jtype];
             evdwl *= factor_lj;
+          }
 
-            if (evflag) ev_tally(i,j,nlocal,newton_pair,evdwl,0.0,fpair,delx,dely,delz);
-          }//untill here.
+          if (evflag) ev_tally(i, j, nlocal, newton_pair, evdwl, 0.0, fpair, delx, dely, delz);
         }
 
         else if (rsq <= cutsq[itype][jtype])
@@ -301,7 +309,7 @@ void PairLJLJ::compute(int eflag, int vflag)
           r6inv = r2inv*r2inv*r2inv;
           forcelj = lambda_p[itype][jtype] * r6inv * (lj1[itype][jtype]*r6inv - lj2[itype][jtype]);
 
-          fpair = factor_lj*forcelj*r2inv;
+          fpair = lambda_param * factor_lj * r6inv * (lj1[itype][jtype] * r6inv - lj2[itype][jtype])* r2inv;
 
           f[i][0] += delx*fpair;
           f[i][1] += dely*fpair;
