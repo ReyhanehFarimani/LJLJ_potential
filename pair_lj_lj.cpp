@@ -61,7 +61,7 @@ PairLJLJ::~PairLJLJ()
     memory->destroy(lj3); //4.0 * epsilon[i][j] * pow(sigma[i][j],12.0)
     memory->destroy(lj4); //4.0 * epsilon[i][j] * pow(sigma[i][j],6.0)
 
-    memory->destroy(offset);
+    //memory->destroy(offset);
   }
 }
 
@@ -97,7 +97,7 @@ void PairLJLJ::allocate()
     memory->create(lambda_p, n+1, n+1, "pair:lambda_p");
 
 
-    memory->create(offset, n, n, "pair:offset");
+    // memory->create(offset, n, n, "pair:offset");
 }
 
 /* ----------------------------------------------------------------------
@@ -199,11 +199,11 @@ double PairLJLJ::init_one(int i, int j)
 
     }
 
-    if (offset_flag && (cut[i][j] > 0.0)) {
-    double ratio = sigma[i][j] / cut[i][j];
-    offset[i][j] = 4.0 * epsilon[i][j] * (pow(ratio, 12.0) - pow(ratio, 6.0));
-    } else
-    offset[i][j] = 0.0;
+    // if (offset_flag && (cut[i][j] > 0.0)) {
+    // double ratio = sigma[i][j] / cut[i][j];
+    // offset[i][j] = 4.0 * epsilon[i][j] * (pow(ratio, 12.0) - pow(ratio, 6.0));
+    // } else
+    // offset[i][j] = 0.0;
 
     cut_inner_sq[i][j] = cut_inner[i][j]*cut_inner[i][j];
     cutsq[i][j] = cut[i][j]*cut[i][j];
@@ -220,7 +220,7 @@ double PairLJLJ::init_one(int i, int j)
     lj2[j][i] = lj2[i][j];
     lj3[j][i] = lj3[i][j];
     lj4[j][i] = lj4[i][j];
-    offset[j][i] = offset[i][j];
+    // offset[j][i] = offset[i][j];
     return cut[i][j];   
 }
 
@@ -296,7 +296,7 @@ void PairLJLJ::compute(int eflag, int vflag)
           // should change
           if (eflag) 
           {
-            evdwl = r6inv * (lj3[itype][jtype] * r6inv - lj4[itype][jtype]) - offset[itype][jtype];
+            evdwl = r6inv * (lj3[itype][jtype] * r6inv - lj4[itype][jtype]);
             evdwl *= factor_lj;
           }
 
