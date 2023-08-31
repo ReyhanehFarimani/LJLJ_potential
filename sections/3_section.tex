@@ -1,11 +1,31 @@
 \section{Results}
-After simulating the result we have compared our result with results in reference \cite{Huissmann2009}. In which we have compared the behavior of the radius of gyration with $\lambda$.
-The results were not similar, to check if it because of different thermostat method or a bug in the code, we have checked with two extreme case meaning $\lambda = 0$, $lambda = 1$.
+\subsection{Comparing with extreme case}
+As it is obvious the two cases of $\lambda = 0$, and $\lambda = 1$, are actually regular (shifted) Lennard-Jones Potential. The $\lambda = 0$ case, is the Lennard-Jones potential, truncated at $2^{1/6} \sigma$, and the 
+$\lambda = 1$, is the usual Lennard-Jones potential.
 \\
-Our results show a \textbf{BUG} in the code...
+The best way to test if the potential is functioning properly is to confirm that systems with the same initial state and seed for the random number generator in the thermostat will follow the same path.
+\\
+We did the test for both cases and monitored the 
+\begin{itemize}
+    \item Temperature,
+    \item Polymer Gyration Radius,
+    \item Total Energy,
+    \item System Trajectory.
+\end{itemize}
+In both cases, we have seen no difference between the pair potential manually added by us (\textit{LJ/LJ}), and the Lammps package \textit{LJ/CUT} pair potential.
+\subsection{Finding $\Theta$ temperature}
+After checking the result for the extreme cases, we are going to compare our result with the results in reference \cite{Huissmann2009}. In which we have compared the behavior of the radius of gyration with $\lambda$. The results are presented in figure \ref{fig:test}, \ref{fig:tes:normal}. Our results show the same behavior that was presented in the reference ~\cite{Huissmann2009}.
 \begin{figure}
     \centering
-    \includegraphics{figures/test_failed.eps}
-    \caption{A not solved Bug. Normalized $R_g$, with $\lambda$. We expect around $\lambda = 0.48$. Curves collapse on eachother as shown by Huissman \textit{et al.}, and we should not see this differences with the scatter points, which are for the a normal Lennard-Jones potential implemented in Lammps.}
-    \label{fig:enter-label}
+    \includegraphics{figures/test_1.eps}
+    \caption{Caption}
+    \label{fig:test}
 \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics{figures/test_1_normalized.eps}
+    \caption{Caption}
+    \label{fig:tes:normal}
+\end{figure}
+
+

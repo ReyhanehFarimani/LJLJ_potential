@@ -12,5 +12,26 @@ For the polymers, we have used the Kramer-Grest model, though with an additive p
   & (r_{ij}\geq2^{1/6}\sigma)
 	\end{cases}
 \end{equation}
-We have used the Lammps molecular package to simulate the system. We have followed the guide in the Lammps documentary: 
-\hyperlink{https://docs.lammps.org/Developer_write_pair.html}{Link}, to add the pair piootential. 
+Here, $ r_{ij} = \vec{r}_i - \vec{r}_j $ denotes the separation between bead i and bead j, whose take position in $ \vec{r}_i $ and $ \vec{r}_j $ respectively. $ \epsilon $ governs the strength of the interaction.
+Monomers are connected by a finitely extensive spring potential (FENE):
+\begin{equation}
+	U_{FENE} = -\frac{kR_0^2}{2} \ln\left[ 1 - (\frac{r_{ij}}{R_0})^2\right],
+\end{equation}
+where $ R_0 = 1.5 \sigma $ is the maximum extension length, and $ k = 30\epsilon/\sigma^2 $ is the spring constant. The length scale of the potentials is scaled for the core polymer interactions.
+\\
+We utilized the Lammps molecular package to simulate the system and followed the instructions in the Lammps documentation [\hyperlink{https://docs.lammps.org/Developer_write_pair.html}{Link}] to add the new pair potential for our purpose.
+\\
+To maintain the temperature we have used the Langevin Thermostat.
+Therefore, we have solved the Langevin equation of motion as follows:
+\begin{equation}
+    m d^2_t\bm{r}_n = \bm{F}_n^{FENE} + \bm{F}_n^{WCA} -\eta d_t\bm{r}_n + \bm{W}_n(t)
+    \label{eq:lang}
+\end{equation}
+ $\bm{W}_n(t)$ is a Gaussian white noise in the system satisfying the fluctuation-dissipation theorem.
+\begin{equation}
+    \left< \bm{W}_i(t) \cdot \bm{W}_j(t') \right> = \delta_{ij} \delta(t - t') 6k_BT \eta 
+\end{equation}
+The equation \ref{eq:lang}, is integrated using the Velocity-Verlet scheme, setting the MD time steps equal to $\delta t_{MD} = 0.002t_{LJ}$, where $t_{LJ} = \sqrt{\frac{m\sigma^2}{\epsilon}}$. 
+Furthermore, as  in \cite{Huissmann2009}, we have set the temperature $k_BT = 1.2 \epsilon$.
+\\ 
+We have used two different values for the polymer functionality (namely $f = 10$, $f = 18$); all of the stars are having 50 monomers in each of the arms.
