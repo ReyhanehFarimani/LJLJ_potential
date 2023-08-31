@@ -1,6 +1,6 @@
 \section{Method}
-We will use Molecular Dynamic Simulation to determine the static properties of a star polymer in three dimensions, as a function of \textit{1. functionality}, \textit{2. solvent quality}.
-For the polymers, we have used the Kramer-Grest model, though with an additive part in the excluded volume interaction potential. As proposed first by Huissmann \textit{et al.} we will use the usual interaction with a tunable parameter($\lambda$). Therefore the excluded volume interaction would be as follow:
+We will use Molecular Dynamic Simulation to determine the static properties of a star polymer in three dimensions as a function of \textit{1. functionality}, \textit{2. solvent quality}.
+For the polymers, we have used the Kramer-Grest model, though with an additive part in the excluded volume interaction potential. As proposed first by Huissmann \textit{et al.} we will use the usual interaction with a tunable parameter($\lambda$). Therefore, the excluded volume interaction would be as follows:
 \begin{equation}
 	U_{LJ}(\lambda) =      
 	\begin{cases}
@@ -12,5 +12,5 @@ For the polymers, we have used the Kramer-Grest model, though with an additive p
   & (r_{ij}\geq2^{1/6}\sigma)
 	\end{cases}
 \end{equation}
-We have used Lammps molecular package to simulate the system. We have followed the guide in the lammps documentary: 
-\hyperlink{https://docs.lammps.org/Developer_write_pair.html}{Linkl}, to add the pair piootential. 
+We have used the Lammps molecular package to simulate the system. We have followed the guide in the Lammps documentary: 
+\hyperlink{https://docs.lammps.org/Developer_write_pair.html}{Link}, to add the pair piootential. 
