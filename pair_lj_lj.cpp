@@ -13,10 +13,6 @@
    See the README file in the top-level LAMMPS directory.
 ------------------------------------------------------------------------- */
 
-/* ----------------------------------------------------------------------
-   Contributing author: Paolo Raiteri (Curtin University)
-------------------------------------------------------------------------- */
-
 #include "pair_lj_lj.h"
 
 #include <cmath>
